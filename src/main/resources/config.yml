@@ -1,0 +1,31 @@
+#########################################################
+#You may use the below replacements in your messages
+#%player% - The player's name
+#%service% - Where the player voted
+#########################################################
+onvote:
+  #Enable rewards?
+  enabled: true
+  #Commands to execute, separated by commas
+  commands: ["give %player% diamond 10", "give player apple 5"]
+  #To use color codes, replace the \u00A7 character with an ampersand
+  message:
+    #Message to send the the player
+    player: "&7Thanks for voting!"
+    #Message to broadcast to the server
+    server: "&a%player% &7voted for the server!"
+    #Message to broadcast when the player incorrectly entered their name
+    error: "Anonymous voted for the server, and forgot to enter their name!"
+onexpire:
+  #Enable expiring commands?
+  enabled: false
+  #Time to wait, in minutes
+  cooldown: 10
+  #Commands to execute, separated by commas
+  commands: [""]
+  #To use color codes, replace the \u00A7 character with an ampersand
+  message:
+    #Message to send the the player
+    player: ""
+    #Message to broadcast to the server
+    server: ""
