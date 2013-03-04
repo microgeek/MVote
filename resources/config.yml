@@ -7,7 +7,7 @@ onvote:
   #Enable rewards?
   enabled: true
   #Commands to execute, separated by commas
-  commands: ["give %player% diamond 10", "give player apple 5"]
+  commands: ["give %player% diamond 10", "give %player% apple 5"]
   #To use color codes, replace the \u00A7 character with an ampersand
   message:
     #Message to send the the player
