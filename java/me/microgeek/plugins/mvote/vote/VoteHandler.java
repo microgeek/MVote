@@ -41,8 +41,9 @@ public class VoteHandler implements Listener{
 		final int expireDelay = ConfigWrapper.VOTE_SCRIPT.getConfig().getInt("onexpire.cooldown");
 
 		final Player player = Bukkit.getPlayer(vote.getUsername());
-				
-		if(player == null || !player.getName().equalsIgnoreCase(vote.getUsername().replace(" ", ""))) {
+		
+		//Handle mis-types		
+		if(player == null || !player.getName().equalsIgnoreCase(vote.getUsername().replace(" ", "_"))) {
 			if(onVoteError != "") {
 				Bukkit.broadcastMessage(onVoteError);
 			}
