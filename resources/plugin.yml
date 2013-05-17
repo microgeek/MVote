@@ -1,7 +1,0 @@
-name: MVote
-main: me.microgeek.plugins.mvote.MVote
-version: 1.0
-author: microgeek
-startup: postworld
-url: http://www.mcgunz.com
-depend: [Votifier]
