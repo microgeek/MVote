@@ -29,3 +29,9 @@ onexpire:
     player: ""
     #Message to broadcast to the server
     server: ""
+votecmd:
+  #Message if you do the command /vote
+  message:
+  - "&c=========================================="
+  - "&6Vote now! Go to this link: &cLINKHERE!"
+  - "&c=========================================="
