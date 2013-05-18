@@ -44,16 +44,31 @@ public class MVote extends JavaPlugin{
 
 		final Vote vote = new Vote();
 
-		if (cmd.getName().equalsIgnoreCase("vote")) {
-			if (player != null) {
-				List<String> lines = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("votecmd.message");
-				for (String line : lines) {
-					player.sendMessage(Util.replaceString(line, vote));
+		if (cmd.getName().equalsIgnoreCase("mvote")) {
+			if (args.length == 0) {
+				if (player != null) {
+					List<String> lines = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("votecmd.message");
+					for (String line : lines) {
+						player.sendMessage(Util.replaceString(line, vote));
+					}
+				} else {
+					List<String> lines = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("votecmd.message");
+					for (String line : lines) {
+						Bukkit.getConsoleSender().sendMessage(Util.replaceString(line, vote));
+					}
 				}
-			} else {
-				List<String> lines = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("votecmd.message");
-				for (String line : lines) {
-					Bukkit.getConsoleSender().sendMessage(Util.replaceString(line, vote));
+			} else if (args.length <= 1) {
+				if (args[0].equalsIgnoreCase("reload")) {
+					ConfigWrapper.VOTE_SCRIPT.reloadConfig();
+					if (player == null) {
+						Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Reloaded config of MVote.");
+					} else {
+						if (player.hasPermission("mvote.reload")) {
+							player.sendMessage(ChatColor.GREEN + "Reloaded config of MVote.");
+						} else {
+							player.sendMessage(ChatColor.RED + "You don't have the permissions to use this command.");
+						}
+					}
 				}
 			}
 		} else if (cmd.getName().equalsIgnoreCase("fakevote")) {
