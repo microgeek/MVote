@@ -1,0 +1,20 @@
+name: MVote
+main: me.microgeek.plugins.mvote.MVote
+version: 1.0
+author: microgeek
+startup: postworld
+url: http://www.mcgunz.com
+depend: [Votifier]
+commands:
+    vote:
+        description: Shows a message with info about voting.
+        usage: /<command>
+        aliases:
+            - v
+    fakevote:
+        description: Creates a fake vote on you.
+        usage: /<command>
+        aliases:
+            - fvote
+            - fakevote
+            - fv
