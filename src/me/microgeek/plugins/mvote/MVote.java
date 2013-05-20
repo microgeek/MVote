@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import me.microgeek.plugins.mvote.util.Util;
 import me.microgeek.plugins.mvote.util.config.ConfigWrapper;
 import me.microgeek.plugins.mvote.vote.VoteHandler;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,6 +23,8 @@ public class MVote extends JavaPlugin{
 		Wrapper.instance = this;
 		Bukkit.getPluginManager().registerEvents(new VoteHandler(), this);
 		ConfigWrapper.VOTE_SCRIPT.setSave(false);
+		ConfigWrapper.PLAYER_DATA.setSave(false);
+		Wrapper.pc.startLoop();
 	}
 
 	@Override
@@ -60,6 +61,7 @@ public class MVote extends JavaPlugin{
 			} else if (args.length <= 1) {
 				if (args[0].equalsIgnoreCase("reload")) {
 					ConfigWrapper.VOTE_SCRIPT.reloadConfig();
+					ConfigWrapper.PLAYER_DATA.reloadConfig();
 					if (player == null) {
 						Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Reloaded config of MVote.");
 					} else {
@@ -86,6 +88,7 @@ public class MVote extends JavaPlugin{
 
 					final boolean handleVote = ConfigWrapper.VOTE_SCRIPT.getConfig().getBoolean("onvote.enabled");
 					final boolean handleExpire = ConfigWrapper.VOTE_SCRIPT.getConfig().getBoolean("onexpire.enabled");
+					final boolean handleCountup = ConfigWrapper.VOTE_SCRIPT.getConfig().getBoolean("onexpire.countup");
 
 					final List<String> onVoteCommands = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("onvote.commands");
 					final List<String> onExpireCommands = ConfigWrapper.VOTE_SCRIPT.getConfig().getStringList("onexpire.commands");
@@ -115,23 +118,37 @@ public class MVote extends JavaPlugin{
 					}
 					if(handleExpire) {
 						final int id = (int) System.currentTimeMillis();
-						Wrapper.EXPIRY_QUEUE.put(id, onExpireCommands);
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								if(onExpireBroadcast != "") {
-									Bukkit.broadcastMessage(onExpireBroadcast);
+						if (!handleCountup) {
+							Wrapper.EXPIRY_QUEUE.put(id, onExpireCommands);
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									if(onExpireBroadcast != "") {
+										Bukkit.broadcastMessage(onExpireBroadcast);
+									}
+									if(onExpireMessage != "") {
+										player2.sendMessage(onExpireMessage);
+									}
+									for(String s : onExpireCommands) {
+										s = Util.replaceString(s, vote);
+										Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s);
+									}
+									Wrapper.EXPIRY_QUEUE.remove(id);
 								}
-								if(onExpireMessage != "") {
-									player2.sendMessage(onExpireMessage);
-								}
-								for(String s : onExpireCommands) {
-									s = Util.replaceString(s, vote);
-									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s);
-								}
-								Wrapper.EXPIRY_QUEUE.remove(id);
+							}.runTaskLater(Wrapper.instance, ((expireDelay * 60) * 20));
+						} else {
+							long time = System.currentTimeMillis();
+							long nexttime = time;
+							if (ConfigWrapper.PLAYER_DATA.getConfig().getLong(player.getName()) == 0) {
+								nexttime = nexttime + ((expireDelay * 60) * 1000);
+								ConfigWrapper.PLAYER_DATA.getConfig().set(player.getName(), nexttime);
+							} else {
+								nexttime = ConfigWrapper.PLAYER_DATA.getConfig().getLong(player.getName());
+								nexttime = nexttime + ((expireDelay * 60) * 1000);
+								ConfigWrapper.PLAYER_DATA.getConfig().set(player.getName(), nexttime);
 							}
-						}.runTaskLater(Wrapper.instance, ((expireDelay * 60) * 20));
+							ConfigWrapper.PLAYER_DATA.saveConfig();
+						}
 					}
 				} else {
 					player.sendMessage(ChatColor.RED + "You don't have the permissions to use this command.");
