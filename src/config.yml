@@ -19,6 +19,8 @@ onvote:
 onexpire:
   #Enable expiring commands?
   enabled: false
+  #Count total time up until command excute?
+  countup: true
   #Time to wait, in minutes
   cooldown: 10
   #Commands to execute, separated by commas
