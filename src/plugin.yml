@@ -6,11 +6,11 @@ startup: postworld
 url: http://www.mcgunz.com
 depend: [Votifier]
 commands:
-    vote:
+    mvote:
         description: Shows a message with info about voting.
         usage: /<command>
         aliases:
-            - v
+            - vote
     fakevote:
         description: Creates a fake vote on you.
         usage: /<command>
